@@ -1,6 +1,8 @@
+import prisma from "@/lib/db";
 import { cn } from "@/lib/utils";
 
-export default function Home() {
-  const something = true;
-  return <div className={cn("text-red-500")}>Hello world</div>;
+export default async function Home() {
+  const users = await prisma.user.findMany();
+
+  return <div className={cn("text-red-500")}>{JSON.stringify(users)}</div>;
 }
