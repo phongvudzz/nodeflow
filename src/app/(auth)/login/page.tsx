@@ -1,14 +1,10 @@
 import { LoginForm } from "@/features/auth/login-form";
-import { requireAuth } from "@/lib/auth-utils";
+import { requireUnauth } from "@/lib/auth-utils";
 
 const Page = async () => {
-  await requireAuth();
+  await requireUnauth();
 
-  return (
-    <div>
-      <LoginForm />
-    </div>
-  );
+  return <LoginForm />;
 };
 
 export default Page;

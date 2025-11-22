@@ -1,14 +1,10 @@
 import { RegisterForm } from "@/features/auth/register-form";
-import { requireAuth } from "@/lib/auth-utils";
+import { requireUnauth } from "@/lib/auth-utils";
 
 const Page = async () => {
-  await requireAuth();
+  await requireUnauth();
 
-  return (
-    <div>
-      <RegisterForm />
-    </div>
-  );
+  return <RegisterForm />;
 };
 
 export default Page;
