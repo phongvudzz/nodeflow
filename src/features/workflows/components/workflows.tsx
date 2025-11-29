@@ -14,8 +14,8 @@ import {
 import {
   useCreateWorkflow,
   useRemoveWorkflow,
-  useSuspenseWorkflow,
-} from "@/features/workflows/hooks/use-workflow";
+  useSuspenseWorkflows,
+} from "@/features/workflows/hooks/use-workflows";
 import { useUpgradeModal } from "@/features/workflows/hooks/use-upgrade-modal";
 import { useRouter } from "next/navigation";
 import { useWorkflowParams } from "../hooks/use-workflows-params";
@@ -40,7 +40,7 @@ export const WorkflowsSearch = () => {
 };
 
 export const WorkflowList = () => {
-  const { data: workflows } = useSuspenseWorkflow();
+  const { data: workflows } = useSuspenseWorkflows();
 
   return (
     <EntityList
@@ -83,7 +83,7 @@ export const WorkflowsHeader = ({ disabled }: { disabled?: boolean }) => {
 };
 
 export const WorkflowsPagination = () => {
-  const workflows = useSuspenseWorkflow();
+  const workflows = useSuspenseWorkflows();
   const [params, setParams] = useWorkflowParams();
 
   return (

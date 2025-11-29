@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import {
   WorkflowList,
   WorkflowsContainer,
+  WorkflowsError,
   WorkflowsLoading,
 } from "@/features/workflows/components/workflows";
 import { SearchParams } from "nuqs/server";
@@ -24,7 +25,7 @@ const Page = async ({ searchParams }: Props) => {
   return (
     <WorkflowsContainer>
       <HydrateClient>
-        <ErrorBoundary fallback={<div>Something went wrong</div>}>
+        <ErrorBoundary fallback={<WorkflowsError message="Failed to load workflows" />}>
           <Suspense
             fallback={<WorkflowsLoading message="Loading workflows..." />}
           >
