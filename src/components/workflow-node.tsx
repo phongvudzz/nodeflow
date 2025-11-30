@@ -16,7 +16,7 @@ interface WorkflowNodeProps {
 
 export function WorkflowNode({
   children,
-  showToolbar,
+  showToolbar = true,
   onDelete,
   onSettings,
   name,
@@ -26,10 +26,10 @@ export function WorkflowNode({
     <>
       {showToolbar && (
         <NodeToolbar>
-          <Button onClick={onSettings}>
+          <Button size="sm" variant="ghost" onClick={onSettings}>
             <SettingsIcon />
           </Button>
-          <Button onClick={onDelete}>
+          <Button size="sm" variant="ghost" onClick={onDelete}>
             <TrashIcon />
           </Button>
         </NodeToolbar>
