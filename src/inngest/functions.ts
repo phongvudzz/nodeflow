@@ -1,30 +1,32 @@
-import prisma from "@/lib/db";
+import { NonRetriableError } from "inngest";
 import { inngest } from "./client";
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
-import { generateText } from "ai";
 import * as Sentry from "@sentry/nextjs";
+import prisma from "@/lib/db";
+import { topologicalSort } from "./utils";
 
-const google = createGoogleGenerativeAI();
-
-export const executeAi = inngest.createFunction(
-  { id: "execute-ai" },
-  { event: "execute/ai" },
+export const executeWorkflow = inngest.createFunction(
+  { id: "execute-workflow" },
+  { event: "workflows/execute.workflow" },
   async ({ event, step }) => {
-    Sentry.logger.info("User triggered test log", {
-      log_source: "sentry_test",
-    });
+    const workflowId = event.data.workflowId;
 
-    const { steps } = await step.ai.wrap("gemini-generate-text", generateText, {
-      model: google("gemini-2.5-flash"),
-      system: "You are a helpful assistant.",
-      prompt: "What is 2 +2?",
-      experimental_telemetry: {
-        isEnabled: true,
-        recordInputs: true,
-        recordOutputs: true,
-      },
-    });
+    if (!workflowId) {
+      throw new NonRetriableError("Workflow ID is missing");
+    }
 
-    return steps;
+    const sortedNodes = await step.run("prepare-workflow", async () => {
+      const workflow = await prisma.workflow.findUniqueOrThrow({
+        where: { id: workflowId },
+        include: {
+          nodes: true,
+          connections: true,
+        },
+      });
+
+      return topologicalSort(workflow.nodes, workflow.connections);
+    });
+    await step.sleep("test", "5s");
+
+    return { sortedNodes };
   }
 );
