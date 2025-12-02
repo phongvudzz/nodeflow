@@ -25,7 +25,20 @@ export const executeWorkflow = inngest.createFunction(
 
       return topologicalSort(workflow.nodes, workflow.connections);
     });
-    await step.sleep("test", "5s");
+
+    // Initialize the context with any initial data from the trigger
+    let context = event.data.initialData || {};
+
+    // Execute each node in order
+    for (const node of sortedNodes) {
+      const executor = getExecutor(node.type);
+      context = await executor({
+        data: node.data as Record<string, unknown>,
+        context,
+        nodeId: node.id,
+        step,
+      });
+    }
 
     return { sortedNodes };
   }
