@@ -7,10 +7,10 @@ import { BaseExecutionNode } from "@/features/executions/base-execution-node";
 import { HttpRequestNodeDialog, HttpRequestFormValues } from "./dialog";
 
 type HttpRequestNodeData = {
+  variableName?: string;
   endpoint?: string;
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: string;
-  [key: string]: unknown;
 };
 
 type HttpRequestNodeType = Node<HttpRequestNodeData>;
