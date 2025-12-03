@@ -38,30 +38,26 @@ const HttpRequestNodeSchema = z.object({
   // .refine(),
 });
 
-export type HttpRequestNodeFormType = z.infer<typeof HttpRequestNodeSchema>;
+export type HttpRequestFormValues = z.infer<typeof HttpRequestNodeSchema>;
 
 interface HttpRequestNodeDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (values: HttpRequestNodeFormType) => void;
-  defaultEndpoint?: string;
-  defaultBody?: string;
-  defaultMethod?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+  onSubmit: (values: HttpRequestFormValues) => void;
+  defaultValues?: Partial<HttpRequestFormValues>;
 }
 
 export const HttpRequestNodeDialog = ({
   open,
   onOpenChange,
   onSubmit,
-  defaultEndpoint = "",
-  defaultBody = "",
-  defaultMethod = "GET",
+  defaultValues = {},
 }: HttpRequestNodeDialogProps) => {
   const form = useForm<z.infer<typeof HttpRequestNodeSchema>>({
     defaultValues: {
-      endpoint: defaultEndpoint,
-      method: defaultMethod,
-      body: defaultBody,
+      endpoint: defaultValues.endpoint || "",
+      method: defaultValues.method || "GET",
+      body: defaultValues.body || "",
     },
     resolver: zodResolver(HttpRequestNodeSchema),
   });
@@ -77,12 +73,12 @@ export const HttpRequestNodeDialog = ({
   useEffect(() => {
     if (open) {
       form.reset({
-        method: defaultMethod,
-        endpoint: defaultEndpoint,
-        body: defaultBody,
+        method: defaultValues.method || "GET",
+        endpoint: defaultValues.endpoint || "",
+        body: defaultValues.body || "",
       });
     }
-  }, [open, defaultMethod, defaultEndpoint, defaultBody]);
+  }, [open, defaultValues, form]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
