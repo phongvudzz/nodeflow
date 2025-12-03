@@ -1,8 +1,8 @@
 import { NonRetriableError } from "inngest";
 import { inngest } from "./client";
-import * as Sentry from "@sentry/nextjs";
 import prisma from "@/lib/db";
 import { topologicalSort } from "./utils";
+import { getExecutor } from "@/features/executions/lib/executor-registry";
 
 export const executeWorkflow = inngest.createFunction(
   { id: "execute-workflow" },
@@ -40,6 +40,6 @@ export const executeWorkflow = inngest.createFunction(
       });
     }
 
-    return { sortedNodes };
+    return { workflowId, result: context };
   }
 );

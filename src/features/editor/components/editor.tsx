@@ -86,9 +86,6 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
         nodeTypes={nodeComponents}
         fitView
         snapToGrid
-        panOnScroll
-        selectionOnDrag
-        panOnDrag={false}
         snapGrid={[10, 10]}
       >
         <Background />
