@@ -22,7 +22,7 @@ export const httpRequestExecutor: NodeExecutor<HttpRequestData> = async ({
     throw new NonRetriableError("HTTP Request node: No endpoint configured");
   }
 
-  if (!data.variableName || typeof data.variableName !== "string") {
+  if (!data.variableName) {
     // TODO: Publish "error" state for http request
     throw new NonRetriableError("Variable name not configured");
   }
