@@ -83,3 +83,4 @@ ERROR [portable_pty::win::psuedocon] CreateProcessW `"\"C:\\Program Files\\nodej
 ERROR [mprocs::error] Error: channel closed
 ERROR [mprocs::error] Error: channel closed
 ERROR [mprocs::error] Error: channel closed
+ERROR [mprocs::error] Error: channel closed
