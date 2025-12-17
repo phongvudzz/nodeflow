@@ -24,6 +24,7 @@ export const httpRequestExecutor: NodeExecutor<HttpRequestData> = async ({
   step,
   publish,
 }) => {
+  console.log("*** context", context);
   await publish(httpRequestChannel().status({ nodeId, status: "loading" }));
 
   if (!data.endpoint) {
