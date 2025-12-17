@@ -1,3 +1,5 @@
+import { inngest } from "@/inngest/client";
+import { sendWorkflowExecution } from "@/inngest/utils";
 import { type NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -16,9 +18,22 @@ export async function POST(request: NextRequest) {
     }
     const body = await request.json();
     const formData = {
-      ...body,
+      formId: body.formId,
+      formTitle: body.formTitle,
+      responseId: body.responseId,
+      timestamp: body.timestamp,
+      respondentEmail: body.respondentEmail,
+      responses: body.responses,
       raw: body,
     };
+
+    // Trigger an Inngest job
+    await sendWorkflowExecution({
+      workflowId,
+      initialData: {
+        googleForm: formData,
+      },
+    });
   } catch (error) {
     console.error("Google form webhook error:", error);
     return NextResponse.json(

@@ -5,7 +5,7 @@ type GoogleFormTriggerData = Record<string, unknown>;
 
 export const googleFormTriggerExecutor: NodeExecutor<
   GoogleFormTriggerData
-> = async ({ data, context, nodeId, step, publish }) => {
+> = async ({ context, nodeId, step, publish }) => {
   await publish(
     googleFormTriggerChannel().status({ nodeId, status: "loading" })
   );
