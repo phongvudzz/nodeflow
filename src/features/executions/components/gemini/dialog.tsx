@@ -31,7 +31,7 @@ import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
-const AVAILABLE_MODELS = [
+export const AVAILABLE_MODELS = [
   "gemini-1.5-flash",
   "gemini-1.5-flash-8b",
   "gemini-1.5-pro",
@@ -129,6 +129,36 @@ export const GeminiNodeDialog = ({
             />
             <FormField
               control={form.control}
+              name="model"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Model</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a model" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {AVAILABLE_MODELS.map((model) => (
+                        <SelectItem key={model} value={model}>
+                          {model}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>
+                    The Google Gemini model to use for completion.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            /> 
+            <FormField
+              control={form.control}
               name="systemPrompt"
               render={({ field }) => (
                 <FormItem>
@@ -142,6 +172,28 @@ export const GeminiNodeDialog = ({
                   </FormControl>
                   <FormDescription>
                     Sets the behavior of the assistant. Use {"{{variables}}"}{" "}
+                    for simple values or {"{{json variable}}"} to stringify
+                    objects
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="userPrompt"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>User Prompt (Optional)</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Summarize this text: {{json httpResponse.data}}"
+                      className="min-h-[120px] font-mono text-xs"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    The prompt to send to the AI. Use {"{{variables}}"}{" "}
                     for simple values or {"{{json variable}}"} to stringify
                     objects
                   </FormDescription>
