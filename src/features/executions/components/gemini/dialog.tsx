@@ -31,7 +31,7 @@ import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
-const AVAILABEL_MODELS = [
+const AVAILABLE_MODELS = [
   "gemini-1.5-flash",
   "gemini-1.5-flash-8b",
   "gemini-1.5-pro",
@@ -47,9 +47,9 @@ const GeminiNodeSchema = z.object({
       message:
         "Variable name must start with a letter or underscore and contains only letters, numbers, and underscores",
     }),
-  endpoint: z.string().min(1, { message: "Please enter a valid URL" }),
-  method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]),
-  body: z.string().optional(),
+  model: z.enum(AVAILABLE_MODELS),
+  systemPrompt: z.string().optional(),
+  userPrompt: z.string().min(1, "User prompt is required"),
   // .refine(),
 });
 
@@ -71,16 +71,14 @@ export const GeminiNodeDialog = ({
   const form = useForm<z.infer<typeof GeminiNodeSchema>>({
     defaultValues: {
       variableName: defaultValues.variableName || "",
-      endpoint: defaultValues.endpoint || "",
-      method: defaultValues.method || "GET",
-      body: defaultValues.body || "",
+      model: defaultValues.model || AVAILABLE_MODELS[0],
+      systemPrompt: defaultValues.systemPrompt || "",
+      userPrompt: defaultValues.userPrompt || "",
     },
     resolver: zodResolver(GeminiNodeSchema),
   });
 
   const watchVariableName = form.watch("variableName") || "myApiCall";
-  const watchMethod = form.watch("method");
-  const showBodyField = ["POST", "PUT", "PATCH"].includes(watchMethod);
 
   const handleSubmit = (values: z.infer<typeof GeminiNodeSchema>) => {
     onSubmit(values);
@@ -91,9 +89,9 @@ export const GeminiNodeDialog = ({
     if (open) {
       form.reset({
         variableName: defaultValues.variableName || "",
-        method: defaultValues.method || "GET",
-        endpoint: defaultValues.endpoint || "",
-        body: defaultValues.body || "",
+        model: defaultValues.model || AVAILABLE_MODELS[0],
+        systemPrompt: defaultValues.systemPrompt || "",
+        userPrompt: defaultValues.userPrompt || "",
       });
     }
   }, [open, defaultValues, form]);
@@ -123,7 +121,7 @@ export const GeminiNodeDialog = ({
                   </FormControl>
                   <FormDescription>
                     Use this name to reference the result in other nodes:{" "}
-                    {`{{${watchVariableName}.httpResponse.data}}`}
+                    {`{{${watchVariableName}.text}}`}
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -131,78 +129,26 @@ export const GeminiNodeDialog = ({
             />
             <FormField
               control={form.control}
-              name="method"
+              name="systemPrompt"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Method</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a method" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="GET">GET</SelectItem>
-                      <SelectItem value="POST">POST</SelectItem>
-                      <SelectItem value="PUT">PUT</SelectItem>
-                      <SelectItem value="PATCH">PATCH</SelectItem>
-                      <SelectItem value="DELETE">DELETE</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormDescription>
-                    The HTTP method to use for this request
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="endpoint"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Endpoint URL</FormLabel>
+                  <FormLabel>System Prompt (Optional)</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="https://api.example.com/users/{{httpResponse.data.id}}"
+                    <Textarea
+                      placeholder="You are a helpful assistant."
+                      className="min-h-[80px] font-mono text-xs"
                       {...field}
                     />
                   </FormControl>
                   <FormDescription>
-                    Static URL or use {"{{variables}}"} for simple values or{" "}
-                    {"{{json variable}}"} to stringify objects
+                    Sets the behavior of the assistant. Use {"{{variables}}"}{" "}
+                    for simple values or {"{{json variable}}"} to stringify
+                    objects
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            {showBodyField && (
-              <FormField
-                control={form.control}
-                name="body"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Request Body</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder={`{\n  "userId": "{{httpResponse.data.id}}",
-  "name": "{{httpResponse.data.name}}", 
-  "items": "{{httpResponse.data.items}}"\n}`}
-                        className="min-h-[120px] font-mono text-xs"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      JSON with template variables. Use {"{{variables}}"} for
-                      simple values or {"{{json variable}}"} to stringify
-                      objects
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
             <DialogFooter className="mt-4">
               <Button type="submit">Save</Button>
             </DialogFooter>
