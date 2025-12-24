@@ -61,6 +61,18 @@ export const executionNodes: NodeTypeOption[] = [
     description: "Uses Google Gemini to generate content.",
     icon: "/logos/gemini.svg",
   },
+  {
+    type: NodeType.OPENAI,
+    label: "OpenAI",
+    description: "Uses OpenAI to generate content.",
+    icon: "/logos/openai.svg",
+  },
+  {
+    type: NodeType.ANTHROPIC,
+    label: "Anthropic",
+    description: "Uses Anthropic to generate content.",
+    icon: "/logos/anthropic.svg",
+  },
 ];
 
 interface NodeSelectorProps {
