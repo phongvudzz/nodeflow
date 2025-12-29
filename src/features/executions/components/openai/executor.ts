@@ -17,6 +17,7 @@ type OpenAIData = {
   systemPrompt?: string;
   userPrompt?: string;
   credentialId?: string;
+  userId?: string;
 };
 
 export const openAIExecutor: NodeExecutor<OpenAIData> = async ({
@@ -25,6 +26,7 @@ export const openAIExecutor: NodeExecutor<OpenAIData> = async ({
   nodeId,
   step,
   publish,
+  userId,
 }) => {
   await publish(openAIChannel().status({ nodeId, status: "loading" }));
 
@@ -48,11 +50,11 @@ export const openAIExecutor: NodeExecutor<OpenAIData> = async ({
     : "You are a helpful assistant.";
   const userPrompt = HandleBars.compile(data.userPrompt)(context);
 
-  // TODO: Fetch credential that user selected
   const credential = await step.run("get-credential", () => {
     return prisma.credential.findUnique({
       where: {
         id: data.credentialId,
+        userId,
       },
     });
   });
