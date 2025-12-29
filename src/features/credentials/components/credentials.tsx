@@ -13,13 +13,14 @@ import {
 } from "@/components/entity-components";
 import { useRouter } from "next/navigation";
 import { useEntitySearch } from "../hooks/use-entity-search";
-import { WorkflowIcon } from "lucide-react";
 import { useCredentialsParams } from "../hooks/use-credentials-params";
 import {
   useRemoveCredential,
   useSuspenseCredentials,
 } from "../hooks/use-credentials";
+import Image from "next/image";
 import { Credential } from "@/generated/prisma/client";
+import { CredentialType } from "@/generated/prisma/enums";
 
 export const CredentialsSearch = () => {
   const [params, setParams] = useCredentialsParams();
@@ -118,12 +119,20 @@ export const CredentialsEmpty = () => {
   );
 };
 
+const credentialLogos: Record<CredentialType, string> = {
+  [CredentialType.OPENAI]: "/logos/openai.svg",
+  [CredentialType.GEMINI]: "/logos/gemini.svg",
+  [CredentialType.ANTHROPIC]: "/logos/anthropic.svg",
+};
+
 export const CredentialItem = ({ credential }: { credential: Credential }) => {
   const removeCredential = useRemoveCredential();
 
   const handleRemove = () => {
     removeCredential.mutate({ id: credential.id });
   };
+
+  const logo = credentialLogos[credential.type] || "/logos/openai.svg";
 
   return (
     <EntityItem
@@ -139,7 +148,7 @@ export const CredentialItem = ({ credential }: { credential: Credential }) => {
       }
       image={
         <div className="size-8 flex items-center justify-center">
-          <WorkflowIcon className="size-5 text-muted-foreground" />
+          <Image src={logo} alt={credential.type} width={20} height={20} />
         </div>
       }
       onRemove={handleRemove}

@@ -1,7 +1,6 @@
 "use client";
 
 import { Node, NodeProps, useReactFlow } from "@xyflow/react";
-import { GlobeIcon } from "lucide-react";
 import { memo, useState } from "react";
 import { BaseExecutionNode } from "@/features/executions/base-execution-node";
 import { useNodeStatus } from "../../hooks/use-node-status";
@@ -10,10 +9,10 @@ import { fetchGeminiRealtimeToken } from "./action";
 import { AVAILABLE_MODELS, GeminiFormValues, GeminiNodeDialog } from "./dialog";
 
 type GeminiNodeData = {
-  variableName?: string,
-  model?: "gemini-1.5-flash" | "gemini-1.5-flash-8b" | "gemini-1.5-pro" | "gemini-1.0-pro" | "gemini-pro" | undefined
-  systemPrompt?: string,
-  userPrompt?: string,
+  variableName?: string;
+  credentialId?: string;
+  systemPrompt?: string;
+  userPrompt?: string;
 };
 
 type GeminiNodeType = Node<GeminiNodeData>;
@@ -24,7 +23,7 @@ export const GeminiNode = memo((props: NodeProps<GeminiNodeType>) => {
 
   const nodeData = props.data;
   const description = nodeData?.userPrompt
-    ? `${nodeData.model || AVAILABLE_MODELS[0]} : ${nodeData.userPrompt.slice(0, 50)}...`
+    ? `${AVAILABLE_MODELS[0]} : ${nodeData.userPrompt.slice(0, 50)}...`
     : "Not configured";
 
   const nodeStatus = useNodeStatus({

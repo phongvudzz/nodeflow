@@ -1,4 +1,5 @@
 import { PAGINATION } from "@/config/constants";
+import { CredentialType } from "@/generated/prisma/enums";
 import prisma from "@/lib/db";
 import {
   createTRPCRouter,
@@ -6,7 +7,6 @@ import {
   protectedProcedure,
 } from "@/trpc/init";
 import z from "zod";
-import { CredentialType } from "@/generated/prisma/enums";
 
 export const credentialsRouter = createTRPCRouter({
   create: premiumProcedure
