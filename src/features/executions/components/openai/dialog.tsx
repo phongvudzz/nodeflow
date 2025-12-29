@@ -30,6 +30,9 @@ import {
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { useCredentialsByType } from "@/features/credentials/hooks/use-credentials";
+import { CredentialType } from "@/generated/prisma/enums";
+import Image from "next/image";
 
 export const AVAILABLE_MODELS = [
   "gemini-2.0-flash",
@@ -48,10 +51,9 @@ const OpenAiNodeSchema = z.object({
       message:
         "Variable name must start with a letter or underscore and contains only letters, numbers, and underscores",
     }),
-  // model: z.enum(AVAILABLE_MODELS),
   systemPrompt: z.string().optional(),
   userPrompt: z.string().min(1, "User prompt is required"),
-  // .refine(),
+  credentialId: z.string().min(1, "Credential is required"),
 });
 
 export type OpenAiFormValues = z.infer<typeof OpenAiNodeSchema>;
@@ -69,12 +71,15 @@ export const OpenAiNodeDialog = ({
   onSubmit,
   defaultValues = {},
 }: OpenAiNodeDialogProps) => {
+  const { data: credentials, isLoading: isLoadingCredentials } =
+    useCredentialsByType(CredentialType.OPENAI);
+
   const form = useForm<z.infer<typeof OpenAiNodeSchema>>({
     defaultValues: {
       variableName: defaultValues.variableName || "",
-      // model: defaultValues.model || AVAILABLE_MODELS[0],
       systemPrompt: defaultValues.systemPrompt || "",
       userPrompt: defaultValues.userPrompt || "",
+      credentialId: defaultValues.credentialId || "",
     },
     resolver: zodResolver(OpenAiNodeSchema),
   });
@@ -90,9 +95,9 @@ export const OpenAiNodeDialog = ({
     if (open) {
       form.reset({
         variableName: defaultValues.variableName || "",
-        // model: defaultValues.model || AVAILABLE_MODELS[0],
         systemPrompt: defaultValues.systemPrompt || "",
         userPrompt: defaultValues.userPrompt || "",
+        credentialId: defaultValues.credentialId || "",
       });
     }
   }, [open, defaultValues, form]);
@@ -113,6 +118,45 @@ export const OpenAiNodeDialog = ({
           >
             <FormField
               control={form.control}
+              name="credentialId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>OpenAI Credential</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    disabled={isLoadingCredentials || !credentials?.length}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a credential" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {credentials?.map((credential) => (
+                        <SelectItem key={credential.id} value={credential.id}>
+                          <div className="flex items-center gap-2">
+                            <Image
+                              src={"/logos/openai.svg"}
+                              alt={credential.type}
+                              width={16}
+                              height={16}
+                            />
+                            {credential.name}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>
+                    The OpenAI model to use for completion.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="variableName"
               render={({ field }) => (
                 <FormItem>
@@ -128,36 +172,6 @@ export const OpenAiNodeDialog = ({
                 </FormItem>
               )}
             />
-            {/* <FormField
-              control={form.control}
-              name="model"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Model</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select a model" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {AVAILABLE_MODELS.map((model) => (
-                        <SelectItem key={model} value={model}>
-                          {model}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormDescription>
-                    The Google OpenAi model to use for completion.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />  */}
             <FormField
               control={form.control}
               name="systemPrompt"
