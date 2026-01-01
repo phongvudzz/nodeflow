@@ -52,26 +52,38 @@ export const executionNodes: NodeTypeOption[] = [
   {
     type: NodeType.HTTP_REQUEST,
     label: "HTTP Request",
-    description: "Makes an HTTP request to an endpoint.",
+    description: "Makes an HTTP request to an endpoint",
     icon: GlobeIcon,
   },
   {
     type: NodeType.GEMINI,
     label: "Gemini",
-    description: "Uses Google Gemini to generate content.",
+    description: "Uses Google Gemini to generate content",
     icon: "/logos/gemini.svg",
   },
   {
     type: NodeType.OPENAI,
     label: "OpenAI",
-    description: "Uses OpenAI to generate content.",
+    description: "Uses OpenAI to generate content",
     icon: "/logos/openai.svg",
   },
   {
     type: NodeType.ANTHROPIC,
     label: "Anthropic",
-    description: "Uses Anthropic to generate content.",
+    description: "Uses Anthropic to generate content",
     icon: "/logos/anthropic.svg",
+  },
+  {
+    type: NodeType.DISCORD,
+    label: "Discord",
+    description: "Send a message to Discord",
+    icon: "/logos/discord.svg",
+  },
+  {
+    type: NodeType.SLACK,
+    label: "Slack",
+    description: "Send a message to Slack",
+    icon: "/logos/slack.svg",
   },
 ];
 
