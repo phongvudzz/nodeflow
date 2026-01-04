@@ -42,7 +42,6 @@ const HttpRequestNodeSchema = z.object({
   endpoint: z.string().min(1, { message: "Please enter a valid URL" }),
   method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]),
   body: z.string().optional(),
-  // .refine(),
 });
 
 export type HttpRequestFormValues = z.infer<typeof HttpRequestNodeSchema>;
