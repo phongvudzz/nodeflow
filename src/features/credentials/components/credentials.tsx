@@ -19,7 +19,7 @@ import {
   useSuspenseCredentials,
 } from "../hooks/use-credentials";
 import Image from "next/image";
-import { Credential } from "@/generated/prisma/client";
+import type { Credential } from "@/generated/prisma/client";
 import { CredentialType } from "@/generated/prisma/enums";
 
 export const CredentialsSearch = () => {

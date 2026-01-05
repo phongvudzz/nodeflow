@@ -10,7 +10,7 @@ import {
   ErrorView,
   LoadingView,
 } from "@/components/entity-components";
-import { ExecutionStatus, type Execution } from "@/generated/prisma/client";
+import type { Execution } from "@/generated/prisma/client";
 import { useSuspenseExecutions } from "../hooks/use-executions";
 import { useExecutionsParams } from "../hooks/use-executions-params";
 import {
@@ -19,6 +19,7 @@ import {
   Loader2Icon,
   XCircleIcon,
 } from "lucide-react";
+import { ExecutionStatus } from "@/generated/prisma/enums";
 
 export const ExecutionsList = () => {
   const { data: executions } = useSuspenseExecutions();
