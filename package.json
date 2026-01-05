@@ -10,7 +10,8 @@
     "format": "biome format --write",
     "inngest:dev": "inngest-cli dev",
     "dev:all": "dotenv -- mprocs",
-    "ngrok:dev": "dotenv -- ngrok http --url=$NGROK_URL 3000"
+    "ngrok:dev": "dotenv -- ngrok http --url=$NGROK_URL 3000",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^2.0.45",
